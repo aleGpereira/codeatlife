@@ -26,6 +26,8 @@ def get_email_from_budget_message(sns_message):
     budget_index = message.index(EMAIL_USER_KEY)
     budget_end = message.index('\n', budget_index)
     user_email = message[budget_index + len(EMAIL_USER_KEY):budget_end].strip()
+    if not valid_email(user_email):
+        user_email = ''
     return user_email
 
 
@@ -80,7 +82,7 @@ def notify_threshold():
     user_email = user_summary.get('user_email')
     user_name = user_summary.get('user_name')
     threshold = user_summary.get('threshold')
-    amount = user_summary.get('quota_amount')
+    amount = user_summary.get('budget_amount')
 
     subject = f"Cost control alert - {threshold}% warning threshold exceeded"
     body = (f"Hi {user_name},<br/><br/>You have exceeded {threshold}% of the ${amount} authorized for the current month. "

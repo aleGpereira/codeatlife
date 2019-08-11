@@ -112,8 +112,7 @@ def sns_subscriber(f):
     """
     @wraps(f)
     def confirm_subscription(*args, **kwargs):
-        if request.headers.get('x-amz-sns-message-type') == SUBCRIPTION_TYPE:
-            logger.error("SNS subscription in process...")
+        if request.headers.get(SNS_MESSAGE_HEADER_TYPE) == SUBCRIPTION_TYPE:
             client = boto3.client('sns')
             json_data = request.get_json(force=True)  # Notification will come without Content-type header
             topic_arn = json_data.get('TopicArn')
@@ -134,8 +133,6 @@ def sns_subscriber(f):
                 logger.error(error_msg)
                 return jsonify({'message': error_msg}), 500
 
-            success_msg = f"{request.endpoint} successfully subscribe to {topic_arn}"
-            logger.error(success_msg)
             return jsonify({'message': success_msg})
 
         return f(*args, **kwargs)
@@ -152,15 +149,14 @@ def budget_subscriber(f):
 
     @wraps(f)
     def confirm_subscription(*args, **kwargs):
-        if request.headers.get('x-amz-sns-message-type') == NOTIFICATION_TYPE:
+        if request.headers.get(SNS_MESSAGE_HEADER_TYPE) == NOTIFICATION_TYPE:
             json_data = request.get_json(force=True)
             message_subject = json_data.get('Subject')
             message = json_data.get('Message')
             topic_arn = json_data.get('TopicArn')
             if message_subject == 'SNS Topic Verified!':
-                success_msg = f"{request.endpoint} successfully subscribe to budget"
-                logger.error(success_msg)
-                return jsonify({'message': message})
+                success_msg = f"Successfully subscribed to budget"
+                return jsonify({'message': success_msg})
 
         return f(*args, **kwargs)
 
