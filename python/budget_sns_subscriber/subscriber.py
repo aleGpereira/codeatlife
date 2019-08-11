@@ -87,7 +87,7 @@ def notify_threshold():
                   )
     message_html = f'{body}'
     try:
-        sent = ses.send_email([user_email], subject, message_html)
+        sent = send_email([user_email], subject, message_html)
     except ClientError as e:
         error_code = e.response.get('Error').get('Code')
         error_message = f"notification email to user failed: {error_code}"
