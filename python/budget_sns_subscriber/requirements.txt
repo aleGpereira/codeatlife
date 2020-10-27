@@ -3,5 +3,5 @@ email-validator==1.0.4
 flask>=1.0
 flask-login>=0.4
 boto3>=1.9
-cryptography==2.7
+cryptography==3.2
 Flask-SQLAlchemy==2.3.2
